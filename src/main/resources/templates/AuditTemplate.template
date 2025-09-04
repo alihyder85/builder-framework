@@ -1,0 +1,89 @@
+// === Audit Entity ===
+package com.example.audit.entity;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Data;
+
+@Data
+@Entity
+public class AuditRecord {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @NotBlank(message = "Action cannot be blank")
+    private String action;
+
+    private String performedBy;
+}
+
+// === Audit Repository ===
+package com.example.audit.repository;
+
+import com.example.audit.entity.AuditRecord;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface AuditRepository extends JpaRepository<AuditRecord, Long> {
+}
+
+// === Audit Service ===
+package com.example.audit.service;
+
+import com.example.audit.entity.AuditRecord;
+import com.example.audit.repository.AuditRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class AuditService {
+
+    private final AuditRepository repository;
+
+    public AuditService(AuditRepository repository) {
+        this.repository = repository;
+    }
+
+    public List<AuditRecord> getAll() {
+        return repository.findAll();
+    }
+
+    public AuditRecord save(AuditRecord record) {
+        return repository.save(record);
+    }
+}
+
+// === Audit Controller ===
+package com.example.audit.controller;
+
+import com.example.audit.entity.AuditRecord;
+import com.example.audit.service.AuditService;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/audit")
+public class AuditController {
+
+    private final AuditService service;
+
+    public AuditController(AuditService service) {
+        this.service = service;
+    }
+
+    @GetMapping
+    public List<AuditRecord> all() {
+        return service.getAll();
+    }
+
+    @PostMapping
+    public AuditRecord create(@RequestBody AuditRecord record) {
+        return service.save(record);
+    }
+}

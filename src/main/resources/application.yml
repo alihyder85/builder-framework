@@ -1,0 +1,6 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: builder-backend
+# Add DB/model configs as needed
