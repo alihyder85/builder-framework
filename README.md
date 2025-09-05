@@ -20,7 +20,6 @@ A hackathon-ready framework to generate containerized microservice apps using LL
 ## Requirements
 
 - Java 17+
-- Python 3.9+
 - Docker
 
 ## Next Steps
